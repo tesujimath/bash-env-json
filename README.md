@@ -88,6 +88,14 @@ $ ./bash-env-json --shellfns f2,f3 ./tests/shell-functions.env | jq
   }
 }```
 
+## Tests
+
+The tests use [bats-core](https://github.com/bats-core/bats-core).
+
+For each `$test`, `$test.setup.env` is used to clear the environment, and `$test.json` is the expected output.
+
+Expected output was created by running `bash-env-json` offline, so these are only regression tests.
+
 ## History
 
 This started life as the [`nu_plugin_bash_env`](https://github.com/tesujimath/nu_plugin_bash_env) plugin for NuShell.  It was forked for Elvish, and then later made generic using JSON.

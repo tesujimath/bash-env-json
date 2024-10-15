@@ -37,6 +37,7 @@
             mkShell {
               buildInputs = [
                 bashInteractive
+                bats
 
                 bash_env
               ];

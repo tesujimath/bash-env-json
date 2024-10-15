@@ -1,0 +1,10 @@
+{
+  "env": {
+    "A": "a",
+    "B": "b",
+    "C": null
+  },
+  "shellvars": {
+    "d": "I am a shell variable"
+  }
+}
