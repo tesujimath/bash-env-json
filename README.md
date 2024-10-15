@@ -4,7 +4,7 @@ This is a Bash script `bash-env-json` for export of Bash environment as JSON, su
 
 Everyone needs Bash format environment support.  Being able to export this as JSON makes it readily available for import into any modern shell.
 
-An adapter for [Elvish](https://github.com/tesujimath/bash-env-elvish) is provided for ease of use from those shells. (An adapter for NuShell will follow, and will likely replace the existing [plugin](https://github.com/tesujimath/nu_plugin_bash_env).
+An adapter for [Elvish](https://github.com/tesujimath/bash-env-elvish) is provided for ease of use from those shells. The [existing plugin for NuShell](https://github.com/tesujimath/nu_plugin_bash_env) will soon be updated to use this also.
 
 Source files may be arbitrarily complex Bash, including conditionals, etc.
 
@@ -86,7 +86,8 @@ $ ./bash-env-json --shellfns f2,f3 ./tests/shell-functions.env | jq
       }
     }
   }
-}```
+}
+```
 
 ## Tests
 
