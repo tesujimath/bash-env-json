@@ -1,0 +1,9 @@
+{
+  "env": {
+    "ABC_123": "ABC=123",
+    "MIXED_BAG": "Did the sixth sheik's sixth sheep say \"baa\", or not?",
+    "QUOTE": "\"Well done!\" is better than \"Well said!\"",
+    "SPACEMAN": "One small step for a man ..."
+  },
+  "shellvars": {}
+}

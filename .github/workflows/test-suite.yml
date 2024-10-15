@@ -1,0 +1,20 @@
+name: test suite
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install bats
+        run: |
+          sudo apt-get install -y bats
+      - name: Setup path
+        run: |
+          # script under test is in repo root directory
+          echo "$GITHUB_WORKSPACE" >> "$GITHUB_PATH"
+      - name: Run tests
+        run: |
+          ./tests.bats
