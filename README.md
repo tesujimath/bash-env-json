@@ -98,4 +98,4 @@ Expected output was created by running `bash-env-json` offline, so these are onl
 
 ## History
 
-This started life as the [`nu_plugin_bash_env`](https://github.com/tesujimath/nu_plugin_bash_env) plugin for NuShell.  It was forked for Elvish, and then later made generic using JSON.
+This started life as the [`nu_plugin_bash_env`](https://github.com/tesujimath/nu_plugin_bash_env) plugin for NuShell.  It was [forked for Elvish](https://github.com/tesujimath/bash-env-elvish), and then later made generic using JSON.
