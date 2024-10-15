@@ -13,4 +13,6 @@ jobs:
           sudo apt-get install -y bats
       - name: Run Tests
         run: |
+          # script under test is in repo root directory
+          echo "$GITHUB_WORKSPACE" >> "$GITHUB_PATH"
           ./tests.bats
