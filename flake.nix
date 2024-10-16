@@ -13,7 +13,7 @@
           pkgs = import nixpkgs {
             inherit system;
           };
-          bash_env =
+          bash_env_json =
             let
               inherit (pkgs) bash coreutils gnused jq makeWrapper writeShellScriptBin;
               inherit (pkgs.lib) makeBinPath;
@@ -39,11 +39,11 @@
                 bashInteractive
                 bats
 
-                bash_env
+                bash_env_json
               ];
             };
 
-          packages.default = bash_env;
+          packages.default = bash_env_json;
         }
       );
 }

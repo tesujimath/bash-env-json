@@ -1,20 +1,21 @@
 name: test suite
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install bats
-        run: |
-          sudo apt-get install -y bats
-      - name: Setup path
-        run: |
-          # script under test is in repo root directory
-          echo "$GITHUB_WORKSPACE" >> "$GITHUB_PATH"
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
       - name: Run tests
         run: |
-          ./tests.bats
+          nix develop --command ./tests.bats
