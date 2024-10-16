@@ -33,17 +33,23 @@
             });
         in
         {
-          devShells.default = with pkgs;
-            mkShell {
-              buildInputs = [
-                bashInteractive
-                bats
+          devShells =
+            let
+              inherit (pkgs) bashInteractive bats mkShell;
+              ci-packages =
+                [
+                  bats
+                  bash_env_json
+                ];
+            in
+            {
+              default = mkShell { buildInputs = ci-packages ++ [ bashInteractive ]; };
 
-                bash_env_json
-              ];
+              ci = mkShell { buildInputs = ci-packages; };
+
+              packages.default = bash_env_json;
             };
 
-          packages.default = bash_env_json;
         }
       );
 }
