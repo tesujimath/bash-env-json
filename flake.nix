@@ -13,7 +13,7 @@
           pkgs = import nixpkgs {
             inherit system;
           };
-          bash_env_json =
+          bash-env-json =
             let
               inherit (pkgs) bash coreutils gnused jq makeWrapper writeShellScriptBin;
               inherit (pkgs.lib) makeBinPath;
@@ -39,7 +39,7 @@
               ci-packages =
                 [
                   bats
-                  bash_env_json
+                  bash-env-json
                 ];
             in
             {
@@ -47,9 +47,9 @@
 
               ci = mkShell { buildInputs = ci-packages; };
 
-              packages.default = bash_env_json;
             };
 
+          packages.default = bash-env-json;
         }
       );
 }
