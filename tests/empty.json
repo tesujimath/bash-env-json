@@ -1,4 +1,6 @@
 {
-  "env": {},
-  "shellvars": {}
+  "env": {
+    "A": ""
+  },
+  "shellvars": { }
 }

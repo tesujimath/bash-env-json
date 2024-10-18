@@ -85,7 +85,7 @@ function emit() {
     # changes
     _names=("${!_emit_current[@]}")
     for _name in "${_names[@]}"; do
-        if test "${_emit_current[$_name]}" != "${_emit_previous[$_name]}"; then
+        if test "${_emit_current[$_name]}" != "${_emit_previous[$_name]}" -o "${_emit_previous[$_name]+EXISTS}" != EXISTS; then
             if [[ "$_name" != BASH_FUNC_* ]]; then
                 echo -n "${_comma}\"$_name\":"
                 emit_value "${_emit_current[$_name]}"
