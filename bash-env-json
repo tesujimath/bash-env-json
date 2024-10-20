@@ -59,7 +59,7 @@ EOF
 
 function emit_error_exit() {
     emit_error "$1"
-    exit 1
+    exit 0
 }
 
 function emit_value() {
