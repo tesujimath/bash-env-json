@@ -22,6 +22,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+VERSION="0.8.0a1"
+USAGE="bash-env-json [--help] [--shellfns <comma-separated-function-names>] [path]"
+
 shopt -s extglob
 
 function capture() {
@@ -47,21 +50,6 @@ function capture() {
     done
 }
 
-function emit_error() {
-    local _msg
-    _msg="$1"
-    jq -c <<EOF
-{
-  "error": "$_msg"
-}
-EOF
-}
-
-function emit_error_exit() {
-    emit_error "$1"
-    exit 0
-}
-
 function emit_value() {
     # jq -R produces nothing on empty input, but we want ""
     if test -n "$1"; then
@@ -69,6 +57,35 @@ function emit_value() {
     else
         echo -n '""'
     fi
+}
+
+function emit_meta() {
+    local _usage="$1"
+    echo -n '"meta":{"bash-env-json":{"version":'
+    emit_value "$VERSION"
+    test -n "$_usage" && {
+        echo -n ',"usage":'
+        emit_value "$USAGE"
+    }
+    echo '}}'
+}
+
+function emit_error_exit() {
+    local _msg="$1"
+    local _usage="$2"
+    echo -n '{"error":'
+    emit_value "$_msg"
+    echo -n ','
+    emit_meta "$_usage"
+    echo '}'
+    exit 0
+}
+
+function emit_help_exit() {
+    echo -n '{'
+    emit_meta usage
+    echo '}'
+    exit 0
 }
 
 function emit() {
@@ -126,7 +143,7 @@ function eval_or_source() {
         # ShellCheck can't cope with sourcing from an unknown path
         # shellcheck disable=SC1090
         if ! source "$_path" >/dev/null 2>"$_error_file"; then
-            emit_error_exit "$(cat "$_error_file")"
+            emit_error_exit "$(head -1 "$_error_file")"
         fi
     else
         # otherwise eval from stdin
@@ -146,10 +163,12 @@ function get_args() {
     # process args
     while test -n "$1"; do
         case "$1" in
+        --help)
+            emit_help_exit
+            ;;
         --shellfns)
             test -z "$2" && {
                 bad_usage "--shellfns requires comma-separated list of function names"
-                exit 1
             }
             mapfile -td, _opt_shellfn_names <<<"$2,"
             unset '_opt_shellfn_names[-1]'
@@ -157,12 +176,10 @@ function get_args() {
             ;;
         -*)
             bad_usage "unexpected option: $1"
-            exit 1
             ;;
         *)
             test -n "$_opt_path" && {
-                bad_usage "repeated path $_opt_path"
-                exit 1
+                bad_usage "repeated path '$_opt_path'"
             }
             _opt_path="$1"
             ;;
@@ -222,8 +239,7 @@ function main() {
 }
 
 function bad_usage() {
-    test -n "$1" && echo >&2 "bash-env-json: $1"
-    echo >&2 "usage: bash-env-json [--shellfns <comma-separated-function-names>] [source]"
+    emit_error_exit "$1" usage
 }
 
 main "$@"
