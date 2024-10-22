@@ -155,6 +155,19 @@ function eval_or_source() {
     fi
 }
 
+function invoke_safely() {
+    local _fn="$1"
+
+    _error_file=$(mktemp -u)
+    # tell ShellCheck I really do want to expand this now and not at the point of exit
+    # shellcheck disable=SC2064
+    trap "rm -f $_error_file" EXIT
+
+    "$_fn" >/dev/null 2>"$_error_file" || {
+        emit_error_exit "$(head -1 "$_error_file")"
+    }
+}
+
 function get_args() {
     local -n _opt_path="$1"
     local -n _opt_shellfn_names="$2"
@@ -210,32 +223,39 @@ function main() {
         }
     done
 
-    emit "{" env _env_previous _env_current
-    emit "," shellvars _shellvars_previous _shellvars_current
+    # accumulate result in a file until we know we are error-free
+    _result_file=$(mktemp -u)
+    # tell ShellCheck I really do want to expand this now and not at the point of exit
+    # shellcheck disable=SC2064
+    trap "rm -f $_result_file" EXIT
+
+    emit "{" env _env_previous _env_current >"$_result_file"
+    emit "," shellvars _shellvars_previous _shellvars_current >"$_result_file"
 
     test "${#_shellfn_names[@]}" -gt 0 && {
-        echo ",\"fn\":{"
+        echo ",\"fn\":{" >"$_result_file"
     }
 
     local _fn_comma=""
     for _fn in "${_shellfn_names[@]}"; do
         capture _env_previous _shellvars_previous
-        # execute the function
-        "$_fn"
+        invoke_safely "$_fn"
         capture _env_current _shellvars_current
 
-        echo "$_fn_comma\"$_fn\":"
-        emit "{" env _env_previous _env_current
-        emit "," shellvars _shellvars_previous _shellvars_current
-        echo "}"
+        echo "$_fn_comma\"$_fn\":" >"$_result_file"
+        emit "{" env _env_previous _env_current >"$_result_file"
+        emit "," shellvars _shellvars_previous _shellvars_current >"$_result_file"
+        echo "}" >"$_result_file"
         _fn_comma=","
     done
 
     test "${#_shellfn_names[@]}" -gt 0 && {
-        echo "}"
+        echo "}" >"$_result_file"
     }
 
-    echo "}"
+    echo "}" >"$_result_file"
+
+    cat "$_result_file"
 }
 
 function bad_usage() {
