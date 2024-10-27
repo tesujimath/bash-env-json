@@ -2,7 +2,8 @@
 
 function test_case() {
 	. "tests/${2:-$1}.setup.env"
-	bash-env-json "tests/$1.env" | jq --sort-keys | diff -w - "tests/${2:-$1}.json"
+	# sort and remove `meta` before comparison with expected output
+	bash-env-json "tests/$1.env" | jq --sort-keys 'del(.meta)' | diff -w - "tests/${2:-$1}.json"
 }
 
 @test "empty" {
