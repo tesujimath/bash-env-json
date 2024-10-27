@@ -60,31 +60,38 @@ function emit_value() {
 }
 
 function emit_meta() {
-    local _usage="$1"
-    echo -n '"meta":{"bash-env-json":{"version":'
+    local _prefix="$1"
+    local _suffix="$2"
+    local _usage="$3"
+    echo -n "$_prefix\"meta\":{\"version\":"
     emit_value "$VERSION"
     test -n "$_usage" && {
         echo -n ',"usage":'
         emit_value "$USAGE"
     }
-    echo '}}'
+    echo "}$_suffix"
 }
 
-function emit_error_exit() {
+function emit_error() {
     local _msg="$1"
     local _usage="$2"
     echo -n '{"error":'
     emit_value "$_msg"
-    echo -n ','
-    emit_meta "$_usage"
-    echo '}'
+    emit_meta , '}' "$_usage"
+}
+
+function emit_error_exit() {
+    emit_error "$@" | jq
     exit 0
 }
 
 function emit_help_exit() {
-    echo -n '{'
-    emit_meta usage
-    echo '}'
+    emit_meta '{' '}' usage | jq
+    exit 0
+}
+
+function emit_version_exit() {
+    emit_meta '{' '}' | jq
     exit 0
 }
 
@@ -182,6 +189,9 @@ function get_args() {
         --help)
             emit_help_exit
             ;;
+        --version)
+            emit_version_exit
+            ;;
         --shellfns)
             test -z "$2" && {
                 bad_usage "--shellfns requires comma-separated list of function names"
@@ -249,10 +259,10 @@ function main() {
         echo "}" >&6
     }
 
-    echo "}" >&6
+    emit_meta ',' '}' >&6
     exec 6>&-
 
-    cat <&5
+    jq <&5
 }
 
 function bad_usage() {
