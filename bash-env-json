@@ -31,7 +31,8 @@ function capture() {
     local -n _capture_env="$1"
     local -n _capture_shellvars="$2"
     local _name _value
-    local -A _omit_shellvars=([_value]=X [BASH_LINENO]=X)
+    # some shell variables leak into our environment, so inhibit that:
+    local -A _inhibit_shellvars=([_value]=X [BASH_LINENO]=X [COLUMNS]=X [LINES]=X)
 
     # environment variables
     while IFS='=' read -r -d '' _name _value; do
@@ -44,7 +45,7 @@ function capture() {
         set | sed -n -e '/^[a-zA-Z_][a-zA-Z_0-9]*=/s/=.*$//p'
         set +o posix
     ); do
-        if test -v "$_name" -a ! "${_capture_env[$_name]+EXISTS}" -a ! "${_omit_shellvars[$_name]+EXISTS}"; then
+        if test -v "$_name" -a ! "${_capture_env[$_name]+EXISTS}" -a ! "${_inhibit_shellvars[$_name]+EXISTS}"; then
             _capture_shellvars["$_name"]="${!_name}"
         fi
     done
