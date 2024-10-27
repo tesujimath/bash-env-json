@@ -138,6 +138,7 @@ function eval_or_source() {
 
     _error_file=$(mktemp -u)
     touch "$_error_file"
+    # shellcheck disable=SC2094
     exec 3<"$_error_file" 4>"$_error_file"
     rm -f "$_error_file"
 
@@ -170,6 +171,7 @@ function invoke_safely() {
 
     _error_file=$(mktemp -u)
     touch "$_error_file"
+    # shellcheck disable=SC2094
     exec 3<"$_error_file" 4>"$_error_file"
     rm -f "$_error_file"
 
@@ -233,6 +235,7 @@ function main() {
     # accumulate result in a file until we know we are error-free
     _result_file=$(mktemp -u)
     touch "$_result_file"
+    # shellcheck disable=SC2094
     exec 5<"$_result_file" 6>"$_result_file"
     rm -f "$_result_file"
 
