@@ -1,8 +1,19 @@
 #!/usr/bin/env bats
 
 function test_case() {
-	. "tests/${2:-$1}.setup.env"
-	bash-env-json "tests/$1.env" | jq --sort-keys | diff -w - "tests/${2:-$1}.json"
+	local _setup_file="tests/$1.setup.env"
+	local _test_file="tests/$1.env"
+	local _expected_output="tests/$1.json"
+
+	# setup cleans the environment of the unexpected
+	. "$_setup_file"
+
+	# args after the first two are passed through verbatim
+	shift
+	echo "$@"
+
+	# sort and remove `meta` before comparison with expected output
+	bash-env-json "$@" "$_test_file" | jq --sort-keys 'del(.meta)' | diff -w - "$_expected_output"
 }
 
 @test "empty" {
@@ -26,5 +37,14 @@ function test_case() {
 }
 
 @test "ming-the-merciless" {
-	test_case "Ming's menu of (merciless) monstrosities" ming-the-merciless
+	test_case "Ming's menu of (merciless) monstrosities"
+}
+
+@test "error" {
+	test_case error
+}
+
+
+@test "shell-function-error" {
+	test_case shell-function-error --shellfns f
 }
