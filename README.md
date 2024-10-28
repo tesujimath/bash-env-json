@@ -91,7 +91,7 @@ $ ./bash-env-json --shellfns f2,f3 ./tests/shell-functions.env | jq
 
 ## Exit Status
 
-Detecting and returning errors in JSON is normal behaviour for `bash-env-json` which is why the exit code in such cases is `0` and not `1` as might otherwise be expected.
+Any error is returned in the JSON `error` field, and `bash-env-json` returns an exit code of `1` in the usual way.
 
 ## Tests
 

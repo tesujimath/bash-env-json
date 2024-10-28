@@ -83,7 +83,7 @@ function emit_error() {
 
 function emit_error_exit() {
     emit_error "$@" | jq
-    exit 0
+    exit 1
 }
 
 function emit_help_exit() {
