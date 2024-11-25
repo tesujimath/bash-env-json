@@ -18,4 +18,4 @@ jobs:
         uses: cachix/install-nix-action@v30
       - name: Run tests
         run: |
-          nix develop '.#ci' --command ./tests.bats
+          nix develop '.#ci' --command bats tests.bats nix-tests.bats
