@@ -13,7 +13,7 @@
           pkgs = import nixpkgs {
             inherit system;
           };
-          bash-env-json = import ./package.nix { inherit pkgs; };
+          bash-env-json = import ./package.nix pkgs;
         in
         {
           devShells =
