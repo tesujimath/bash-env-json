@@ -13,7 +13,7 @@ function test_case() {
 	echo "$@"
 
 	# sort and remove `meta` before comparison with expected output
-	bash-env-json "$@" "$_test_file" | jq --sort-keys 'del(.meta)' | diff -w - "$_expected_output"
+	./bash-env-json "$@" "$_test_file" | jq --sort-keys 'del(.meta)' | diff -w - "$_expected_output"
 }
 
 @test "empty" {
@@ -40,10 +40,13 @@ function test_case() {
 	test_case "Ming's menu of (merciless) monstrosities"
 }
 
+@test "multiline-string" {
+	test_case multiline-string
+}
+
 @test "error" {
 	test_case error
 }
-
 
 @test "shell-function-error" {
 	test_case shell-function-error --shellfns f

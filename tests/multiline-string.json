@@ -1,0 +1,6 @@
+{
+  "env": {
+    "MULTILINE": "a\nb\nc"
+  },
+  "shellvars": { }
+}

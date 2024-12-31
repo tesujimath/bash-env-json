@@ -22,7 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-VERSION="0.10.0a1"
+VERSION="0.10.0a2"
 USAGE="bash-env-json [--help] [--shellfns <comma-separated-function-names>] [path]"
 
 shopt -s extglob
@@ -63,7 +63,7 @@ function capture() {
 function emit_value() {
     # `jq -R` produces nothing on empty input, but we want ""
     if test -n "$1"; then
-        echo -n "$1" | _jq -R
+        echo -n "$1" | _jq -Rs
     else
         echo -n '""'
     fi
