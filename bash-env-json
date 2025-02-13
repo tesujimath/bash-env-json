@@ -176,6 +176,7 @@ function eval_or_source() {
 }
 
 function invoke_safely() {
+    local _error_file
     local _fn="$1"
 
     _error_file=$(_mktemp -u)
