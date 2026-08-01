@@ -51,3 +51,7 @@ function test_case() {
 @test "shell-function-error" {
 	test_case shell-function-error --shellfns f
 }
+
+@test "cd-does-nothing" {
+	test_case cd-does-nothing
+}
