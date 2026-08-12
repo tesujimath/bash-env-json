@@ -3,12 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem
-      (system:
+  outputs = { nixpkgs, ... }:
+    let
+      forAllSystems = nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed;
+
+      perSystem = system:
         let
           pkgs = import nixpkgs {
             inherit system;
@@ -33,6 +34,12 @@
             };
 
           packages.default = bash-env-json;
-        }
-      );
+        };
+
+      systemOutputs = forAllSystems perSystem;
+    in
+    {
+      packages = forAllSystems (system: systemOutputs.${system}.packages);
+      devShells = forAllSystems (system: systemOutputs.${system}.devShells);
+    };
 }
